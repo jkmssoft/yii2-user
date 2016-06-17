@@ -79,7 +79,7 @@ class UserTest extends TestCase
             $user = $this->getFixture('user')->getModel('notactivated');
             verify('user is not activated', $user->getIsActivatedByAdmin())->false();
             $user->unblock();
-            verify('user is unblocked', $user->getIsBlocked())->true();
+            verify('user is unblocked', $user->getIsBlocked())->false();
             verify('user is activated', $user->getIsActivatedByAdmin())->true();
         });
     }
