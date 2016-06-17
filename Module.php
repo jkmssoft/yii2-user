@@ -34,7 +34,7 @@ class Module extends BaseModule
     const STRATEGY_SECURE = 2;
 
     /** @var bool Whether user account has to get activated by an admin. */
-    public $enableActivationByAdminIsRequired = true;
+    public $enableActivationByAdminIsRequired = false;
 
     /** @var bool Whether to show flash messages. */
     public $enableFlashMessages = true;
