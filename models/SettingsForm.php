@@ -188,8 +188,8 @@ class SettingsForm extends Model
         $this->mailer->sendReconfirmationMessage($this->user, $token);
 
         // unset flags if they exist
-        $this->user->flags &= ~User::NEW_EMAIL_CONFIRMED;
-        $this->user->flags &= ~User::OLD_EMAIL_CONFIRMED;
+        $this->user->flags &= ~User::FLAG_NEW_EMAIL_CONFIRMED;
+        $this->user->flags &= ~User::FLAG_OLD_EMAIL_CONFIRMED;
         $this->user->save(false);
 
         Yii::$app->session->setFlash('info', Yii::t('user', 'We have sent confirmation links to both old and new email addresses. You must click both links to complete your request'));

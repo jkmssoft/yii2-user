@@ -66,8 +66,8 @@ class User extends ActiveRecord implements IdentityInterface
     const AFTER_REGISTER  = 'afterRegister';
 
     // following constants are used on secured email changing process
-    const OLD_EMAIL_CONFIRMED = 0b1;
-    const NEW_EMAIL_CONFIRMED = 0b10;
+    const FLAG_OLD_EMAIL_CONFIRMED = 0b1;
+    const FLAG_NEW_EMAIL_CONFIRMED = 0b10;
 
     /** @var string Plain password. Used for model validation. */
     public $password;
@@ -346,16 +346,18 @@ class User extends ActiveRecord implements IdentityInterface
                 if ($this->module->emailChangeStrategy == Module::STRATEGY_SECURE) {
                     switch ($token->type) {
                         case Token::TYPE_CONFIRM_NEW_EMAIL:
-                            $this->flags |= self::NEW_EMAIL_CONFIRMED;
+                            $this->flags |= self::FLAG_NEW_EMAIL_CONFIRMED;
                             Yii::$app->session->setFlash('success', Yii::t('user', 'Awesome, almost there. Now you need to click the confirmation link sent to your old email address'));
                             break;
                         case Token::TYPE_CONFIRM_OLD_EMAIL:
-                            $this->flags |= self::OLD_EMAIL_CONFIRMED;
+                            $this->flags |= self::FLAG_OLD_EMAIL_CONFIRMED;
                             Yii::$app->session->setFlash('success', Yii::t('user', 'Awesome, almost there. Now you need to click the confirmation link sent to your new email address'));
                             break;
                     }
                 }
-                if ($this->module->emailChangeStrategy == Module::STRATEGY_DEFAULT || ($this->flags & self::NEW_EMAIL_CONFIRMED && $this->flags & self::OLD_EMAIL_CONFIRMED)) {
+                if ($this->module->emailChangeStrategy == Module::STRATEGY_DEFAULT
+                    || ($this->flags & self::FLAG_NEW_EMAIL_CONFIRMED
+                        && $this->flags & self::FLAG_OLD_EMAIL_CONFIRMED)) {
                     $this->email = $this->unconfirmed_email;
                     $this->unconfirmed_email = null;
                     Yii::$app->session->setFlash('success', Yii::t('user', 'Your email address has been changed'));
