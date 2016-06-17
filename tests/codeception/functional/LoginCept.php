@@ -24,10 +24,20 @@ $user = $I->getFixture('user')->getModel('blocked');
 $page->login($user->email, 'qwerty');
 $I->see('Your account has been blocked');
 
+$enableActivationByAdminIsRequiredBefore = \Yii::$container->get(\dektrium\user\Module::className(), [
+    'enableActivationByAdminIsRequired'
+]);
+\Yii::$container->set(\dektrium\user\Module::className(), [
+    'enableActivationByAdminIsRequired' => true,
+]);
 $I->amGoingTo('try to login with not activated account');
 $user = $I->getFixture('user')->getModel('notactivated');
 $page->login($user->email, 'qwerty');
 $I->see('Your account has not yet been activated by an administrator');
+\Yii::$container->set(\dektrium\user\Module::className(), [
+    'enableActivationByAdminIsRequired' => $enableActivationByAdminIsRequiredBefore,
+]);
+
 
 $I->amGoingTo('try to login with wrong credentials');
 $user = $I->getFixture('user')->getModel('user');
