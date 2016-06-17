@@ -62,7 +62,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         [
                             'label' => Yii::t('user', 'Block'),
                             'url'   => ['/user/admin/block', 'id' => $user->id],
-                            'visible' => !$user->isBlocked,
+                            'visible' => !$user->isBlocked && $user->isActivatedByAdmin,
                             'linkOptions' => [
                                 'class' => 'text-danger',
                                 'data-method' => 'post',
@@ -77,6 +77,16 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'class' => 'text-success',
                                 'data-method' => 'post',
                                 'data-confirm' => Yii::t('user', 'Are you sure you want to unblock this user?'),
+                            ],
+                        ],
+                        [
+                            'label' => Yii::t('user', 'Activate'),
+                            'url'   => ['/user/admin/block', 'id' => $user->id],
+                            'visible' => !$user->isBlocked && !$user->isActivatedByAdmin,
+                            'linkOptions' => [
+                                'class' => 'text-success',
+                                'data-method' => 'post',
+                                'data-confirm' => Yii::t('user', 'Are you sure you want to activate this user?'),
                             ],
                         ],
                         [

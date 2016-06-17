@@ -107,7 +107,15 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getIsBlocked()
     {
-        return $this->blocked_at != null;
+        return $this->blocked_at > 0;
+    }
+
+    /**
+     * @return bool Whether the user is activated by an admin or not.
+     */
+    public function getIsActivatedByAdmin()
+    {
+        return $this->blocked_at === null;
     }
 
     /**
@@ -267,6 +275,10 @@ class User extends ActiveRecord implements IdentityInterface
 
         $this->confirmed_at = $this->module->enableConfirmation ? null : time();
         $this->password     = $this->module->enableGeneratingPassword ? Password::generate(8) : $this->password;
+
+        if ($this->module->enableActivationByAdminIsRequired) {
+            $this->blocked_at = 0;
+        }
 
         $this->trigger(self::BEFORE_REGISTER);
 

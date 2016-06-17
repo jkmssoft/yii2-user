@@ -17,6 +17,7 @@ use dektrium\user\models\Profile;
 use dektrium\user\models\User;
 use dektrium\user\models\UserSearch;
 use dektrium\user\Module;
+use dektrium\user\Mailer;
 use dektrium\user\traits\EventTrait;
 use Yii;
 use yii\base\ExitException;
@@ -127,6 +128,15 @@ class AdminController extends Controller
 
     /** @var Finder */
     protected $finder;
+
+    /**
+     * @return Mailer
+     * @throws \yii\base\InvalidConfigException
+     */
+    protected function getMailer()
+    {
+        return Yii::$container->get(Mailer::className());
+    }
 
     /**
      * @param string  $id
@@ -374,11 +384,19 @@ class AdminController extends Controller
         } else {
             $user  = $this->findModel($id);
             $event = $this->getUserEvent($user);
+
             if ($user->getIsBlocked()) {
                 $this->trigger(self::EVENT_BEFORE_UNBLOCK, $event);
                 $user->unblock();
                 $this->trigger(self::EVENT_AFTER_UNBLOCK, $event);
                 Yii::$app->getSession()->setFlash('success', Yii::t('user', 'User has been unblocked'));
+            } elseif (!$user->getIsActivatedByAdmin()) {
+                $this->trigger(self::EVENT_BEFORE_UNBLOCK, $event);
+                $wasActivatedByAdmin = $user->getIsActivatedByAdmin();
+                $user->unblock();
+                $this->trigger(self::EVENT_AFTER_UNBLOCK, $event);
+                Yii::$app->getSession()->setFlash('success', Yii::t('user', 'User has been activated'));
+                $this->mailer->sendActivationMessage($user);
             } else {
                 $this->trigger(self::EVENT_BEFORE_BLOCK, $event);
                 $user->block();

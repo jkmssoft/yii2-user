@@ -33,6 +33,9 @@ class Module extends BaseModule
     /** Email is changed after user clicks both confirmation links sent to his old and new email addresses. */
     const STRATEGY_SECURE = 2;
 
+    /** @var bool Whether user account has to get activated by an admin. */
+    public $enableActivationByAdminIsRequired = true;
+
     /** @var bool Whether to show flash messages. */
     public $enableFlashMessages = true;
 
@@ -68,7 +71,7 @@ class Module extends BaseModule
 
     /** @var array An array of administrator's usernames. */
     public $admins = [];
-	
+
 	/** @var string The Administrator permission name. */
     public $adminPermission;
 
