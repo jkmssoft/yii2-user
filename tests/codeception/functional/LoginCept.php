@@ -24,6 +24,11 @@ $user = $I->getFixture('user')->getModel('blocked');
 $page->login($user->email, 'qwerty');
 $I->see('Your account has been blocked');
 
+$I->amGoingTo('try to login with not activated account');
+$user = $I->getFixture('user')->getModel('notactivated');
+$page->login($user->email, 'qwerty');
+$I->see('Your account has not yet been activated by an administrator');
+
 $I->amGoingTo('try to login with wrong credentials');
 $user = $I->getFixture('user')->getModel('user');
 $page->login($user->email, 'wrong');
