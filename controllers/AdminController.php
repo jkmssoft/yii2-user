@@ -126,6 +126,17 @@ class AdminController extends Controller
      */
     const EVENT_AFTER_UNBLOCK = 'afterUnblock';
 
+    /**
+     * Event is triggered before activating existing user.
+     * Triggered with \dektrium\user\events\UserEvent.
+     */
+    const EVENT_BEFORE_ACTIVATION = 'beforeActivation';
+    /**
+     * Event is triggered after activation existing user.
+     * Triggered with \dektrium\user\events\UserEvent.
+     */
+    const EVENT_AFTER_ACTIVATION = 'afterActivation';
+
     /** @var Finder */
     protected $finder;
 
@@ -390,18 +401,38 @@ class AdminController extends Controller
                 $user->unblock();
                 $this->trigger(self::EVENT_AFTER_UNBLOCK, $event);
                 Yii::$app->getSession()->setFlash('success', Yii::t('user', 'User has been unblocked'));
-            } elseif (!$user->getIsActivatedByAdmin()) {
-                $this->trigger(self::EVENT_BEFORE_UNBLOCK, $event);
-                $wasActivatedByAdmin = $user->getIsActivatedByAdmin();
-                $user->unblock();
-                $this->trigger(self::EVENT_AFTER_UNBLOCK, $event);
-                Yii::$app->getSession()->setFlash('success', Yii::t('user', 'User has been activated'));
-                $this->mailer->sendActivationMessage($user);
             } else {
                 $this->trigger(self::EVENT_BEFORE_BLOCK, $event);
                 $user->block();
                 $this->trigger(self::EVENT_AFTER_BLOCK, $event);
                 Yii::$app->getSession()->setFlash('success', Yii::t('user', 'User has been blocked'));
+            }
+        }
+
+        return $this->redirect(Url::previous('actions-redirect'));
+    }
+
+    /**
+     * Activate the user.
+     *
+     * @param int $id
+     *
+     * @return Response
+     */
+    public function actionActivate($id)
+    {
+        if ($id == Yii::$app->user->getId()) {
+            Yii::$app->getSession()->setFlash('info', Yii::t('user', 'You can not activate your own account'));
+        } else {
+            $user  = $this->findModel($id);
+            $event = $this->getUserEvent($user);
+
+            if (!$user->getIsActivatedByAdmin()) {
+                $this->trigger(self::EVENT_BEFORE_ACTIVATION, $event);
+                $user->unblock();
+                $this->trigger(self::EVENT_AFTER_ACTIVATION, $event);
+                Yii::$app->getSession()->setFlash('success', Yii::t('user', 'User has been activated'));
+                $this->mailer->sendActivationMessage($user);
             }
         }
 
