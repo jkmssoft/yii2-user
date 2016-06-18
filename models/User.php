@@ -417,6 +417,14 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
+     * Activates the user by calling unblock.
+     */
+    public function activate()
+    {
+        return $this->unblock();
+    }
+
+    /**
      * Generates new username based on email address, or creates new username
      * like "emailuser1".
      */
