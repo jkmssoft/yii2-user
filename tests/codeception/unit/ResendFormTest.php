@@ -29,6 +29,7 @@ class ResendFormTest extends TestCase
             'email' => $user->email,
         ]);
         $this->assertFalse($form->validate());
+// todo allways true!
 
         $form = \Yii::createObject(ResendForm::className());
         $user = $this->getFixture('user')->getModel('unconfirmed');

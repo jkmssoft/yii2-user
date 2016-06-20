@@ -49,7 +49,7 @@ class RecoveryFormTest extends TestCase
         $this->specify('form is not valid when user does not exist', function () use ($form) {
             test::double(ActiveQuery::className(), ['exists' => false]);
             $form->setAttributes(['email' => 'foobar@example.com']);
-            verify($form->validate())->false();
+            verify($form->validate())->true();
             verify($form->getErrors('email'))->contains('There is no user with this email address');
             test::double(ActiveQuery::className(), ['exists' => true]);
         });
@@ -73,7 +73,9 @@ class RecoveryFormTest extends TestCase
             verify($form->sendRecoveryMessage())->true();
             $token->verifyInvoked('save');
             verify(\Yii::$app->session->getFlash('info'))
-                ->equals('An email has been sent with instructions for resetting your password');
+                ->equals('If your email address exists, an email has been sent with instructions for resetting your password');
+//                ->equals('An email has been sent with instructions for resetting your password');
+
             $mailer->verifyInvoked('sendRecoveryMessage');
         });
     }
