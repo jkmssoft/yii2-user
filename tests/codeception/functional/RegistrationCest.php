@@ -89,4 +89,23 @@ class RegistrationCest
         $I->assertEquals('tester', $user->username);
         $I->seeInEmail('We have generated a password for you');
     }
+
+    /**
+     * Test registration with securityWord.
+     * @param FunctionalTester $I
+     */
+    public function testRegistrationWithSecurityWord(FunctionalTester $I)
+    {
+        $securityWord = 'human';
+        \Yii::$container->set(Module::className(), [
+            'securityWord' => $securityWord,
+        ]);
+        $page = RegistrationPage::openBy($I);
+        $page->register('tester@example.com', 'tester', 'tester', $securityWord.'NOT');
+        $I->see(Html::encode('Enter word \''.$securityWord.'\' in this field.'));
+
+        $page = RegistrationPage::openBy($I);
+        $page->register('tester@example.com', 'tester', 'tester', $securityWord);
+        $I->see('Your account has been created and a message with further instructions has been sent to your email');
+    }
 }
