@@ -82,7 +82,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         [
                             'label' => Yii::t('user', 'Activate'),
                             'url'   => ['/user/admin/activate', 'id' => $user->id],
-                            'visible' => !$user->isBlocked && !$user->isActivatedByAdmin,
+                            'visible' => $user->isNotActivatedByAdmin,
                             'linkOptions' => [
                                 'class' => 'text-success',
                                 'data-method' => 'post',

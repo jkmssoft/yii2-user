@@ -429,7 +429,7 @@ class AdminController extends Controller
 
             if (!$user->getIsActivatedByAdmin()) {
                 $this->trigger(self::EVENT_BEFORE_ACTIVATION, $event);
-                $user->unblock();
+                $user->activate();
                 $this->trigger(self::EVENT_AFTER_ACTIVATION, $event);
                 Yii::$app->getSession()->setFlash('success', Yii::t('user', 'User has been activated'));
                 $this->mailer->sendActivationMessage($user);
