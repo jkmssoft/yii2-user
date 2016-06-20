@@ -70,15 +70,15 @@ class ResendForm extends Model
         return [
             'emailRequired' => ['email', 'required'],
             'emailPattern' => ['email', 'email'],
-            'emailExist' => ['email', 'exist', 'targetClass' => $this->module->modelMap['User']],
-            'emailConfirmed' => [
+            //'emailExist' => ['email', 'exist', 'targetClass' => $this->module->modelMap['User']],
+            /*'emailConfirmed' => [
                 'email',
                 function () {
-                    if ($this->user != null && $this->user->getIsConfirmed()) {
+                    if ($this->user !== null && $this->user->getIsConfirmed()) {
                         $this->addError('email', Yii::t('user', 'This account has already been confirmed'));
                     }
                 }
-            ],
+            ],*/
         ];
     }
 
@@ -103,18 +103,21 @@ class ResendForm extends Model
      */
     public function resend()
     {
-        if (!$this->validate()) {
-            return false;
+        if ($this->validate() && $this->user !== null) {
+            /** @var Token $token */
+            $token = Yii::createObject([
+                'class'   => Token::className(),
+                'user_id' => $this->user->id,
+                'type'    => Token::TYPE_CONFIRMATION,
+            ]);
+            $token->save(false);
+            $this->mailer->sendConfirmationMessage($this->user, $token);
         }
-        /** @var Token $token */
-        $token = Yii::createObject([
-            'class'   => Token::className(),
-            'user_id' => $this->user->id,
-            'type'    => Token::TYPE_CONFIRMATION,
-        ]);
-        $token->save(false);
-        $this->mailer->sendConfirmationMessage($this->user, $token);
-        Yii::$app->session->setFlash('info', Yii::t('user', 'A message has been sent to your email address. It contains a confirmation link that you must click to complete registration.'));
+
+        Yii::$app->session->setFlash(
+            'info',
+            Yii::t('user', 'If your email address exists, a message has been sent to your email address. It contains a confirmation link that you must click to complete registration.')
+        );
 
         return true;
     }

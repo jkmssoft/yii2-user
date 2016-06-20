@@ -81,21 +81,23 @@ class RecoveryForm extends Model
             'emailTrim' => ['email', 'filter', 'filter' => 'trim'],
             'emailRequired' => ['email', 'required'],
             'emailPattern' => ['email', 'email'],
-            'emailExist' => [
+            /*'emailExist' => [
                 'email',
                 'exist',
                 'targetClass' => $this->module->modelMap['User'],
                 'message' => Yii::t('user', 'There is no user with this email address'),
-            ],
+            ],*/
             'emailUnconfirmed' => [
                 'email',
                 function ($attribute) {
                     $this->user = $this->finder->findUserByEmail($this->email);
-                    if ($this->user !== null && $this->module->enableConfirmation && !$this->user->isConfirmed) {
-                        $this->addError($attribute, Yii::t('user', 'You need to confirm your email address'));
-                    }
-                    if ($this->user->isBlocked) {
-                        $this->addError($attribute, Yii::t('user', 'Your account has been blocked'));
+                    if ($this->user !== null) {
+                        if ($this->module->enableConfirmation && !$this->user->isConfirmed) {
+                            $this->addError($attribute, Yii::t('user', 'You need to confirm your email address'));
+                        }
+                        if ($this->user->isBlocked) {
+                            $this->addError($attribute, Yii::t('user', 'Your account has been blocked'));
+                        }
                     }
                 }
             ],
@@ -111,7 +113,7 @@ class RecoveryForm extends Model
      */
     public function sendRecoveryMessage()
     {
-        if ($this->validate()) {
+        if ($this->validate() && $this->user !== null) {
             /** @var Token $token */
             $token = Yii::createObject([
                 'class'   => Token::className(),
@@ -126,15 +128,13 @@ class RecoveryForm extends Model
             if (!$this->mailer->sendRecoveryMessage($this->user, $token)) {
                 return false;
             }
-
-            Yii::$app->session->setFlash('info',
-                Yii::t('user', 'An email has been sent with instructions for resetting your password')
-            );
-
-            return true;
         }
 
-        return false;
+        Yii::$app->session->setFlash('info',
+            Yii::t('user', 'If your email address exists, an email has been sent with instructions for resetting your password')
+        );
+
+        return true;
     }
 
     /**
