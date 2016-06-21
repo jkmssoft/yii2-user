@@ -41,7 +41,11 @@
         <?php if ($user->isBlocked): ?>
             <td class="text-danger"><?= Yii::t('user', 'Blocked at {0, date, MMMM dd, YYYY HH:mm}', [$user->blocked_at]) ?></td>
         <?php else: ?>
-            <td class="text-success"><?= Yii::t('user', 'Not blocked') ?></td>
+            <?php if (!$user->isActivatedByAdmin): ?>
+                <td class="text-danger"><?= Yii::t('user', 'Not yet activated by admin') ?></td>
+            <?php else: ?>
+                <td class="text-success"><?= Yii::t('user', 'Not blocked') ?></td>
+            <?php endif ?>
         <?php endif ?>
     </tr>
 </table>

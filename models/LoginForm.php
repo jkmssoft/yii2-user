@@ -84,8 +84,17 @@ class LoginForm extends Model
                         if ($confirmationRequired && !$this->user->getIsConfirmed()) {
                             $this->addError($attribute, Yii::t('user', 'You need to confirm your email address'));
                         }
+
                         if ($this->user->getIsBlocked()) {
                             $this->addError($attribute, Yii::t('user', 'Your account has been blocked'));
+                        }
+
+                        $activationByAdminIsRequired = $this->module->enableActivationByAdminIsRequired;
+                        if ($activationByAdminIsRequired && !$this->user->getIsActivatedByAdmin()) {
+                            $this->addError(
+                                $attribute,
+                                Yii::t('user', 'Your account has not yet been activated by an administrator')
+                            );
                         }
                     }
                 }

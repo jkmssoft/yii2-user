@@ -28,6 +28,7 @@ class RegistrationCest
         \Yii::$container->set(Module::className(), [
             'enableConfirmation'       => false,
             'enableGeneratingPassword' => false,
+            'enableActivationByAdminIsRequired' => false,
         ]);
 
         $page = RegistrationPage::openBy($I);
@@ -107,5 +108,23 @@ class RegistrationCest
         $page = RegistrationPage::openBy($I);
         $page->register('tester@example.com', 'tester', 'tester', $securityWord);
         $I->see('Your account has been created and a message with further instructions has been sent to your email');
+    }
+
+    /**
+     * Tests registration when activation message is sent.
+     * @param FunctionalTester $I
+     */
+    public function testRegistrationWithActivationByAdmin(FunctionalTester $I)
+    {
+        \Yii::$container->set(Module::className(), [
+            'enableConfirmation' => false,
+            'enableActivationByAdminIsRequired' => true,
+        ]);
+        $page = RegistrationPage::openBy($I);
+        $page->register('tester@example.com', 'tester', 'tester');
+        $I->see('Your account has been created and a message with further instructions has been sent to your email');
+        $user  = $I->grabRecord(User::className(), ['email' => 'tester@example.com']);
+        $I->seeInEmail('An Administrator needs to activate your account. You\'ll receive an email when your account has been activated');
+        $I->assertFalse($user->isActivatedByAdmin);
     }
 }

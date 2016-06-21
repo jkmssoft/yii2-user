@@ -71,6 +71,22 @@ class UserTest extends TestCase
         });
     }
 
+    public function testenableActivationByAdminIsRequired()
+    {
+        \Yii::$app->getModule('user')->enableActivationByAdminIsRequired = true;
+
+        $this->specify('user needs to be activated', function () {
+            $user = $this->getFixture('user')->getModel('notactivated');
+            verify('user is not blocked', $user->getIsBlocked())->false();
+            verify('user is not activated', $user->getIsActivatedByAdmin())->false();
+            verify('user is not activated', $user->getIsNotActivatedByAdmin())->true();
+            $user->activate();
+            verify('user is unblocked', $user->getIsBlocked())->false();
+            verify('user is activated', $user->getIsActivatedByAdmin())->true();
+            verify('user is activated', $user->getIsNotActivatedByAdmin())->false();
+        });
+    }
+
     public function testenableConfirmation()
     {
         \Yii::$app->getModule('user')->enableConfirmation = true;

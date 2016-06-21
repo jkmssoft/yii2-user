@@ -95,6 +95,13 @@ $this->params['breadcrumbs'][] = $this->title;
                         'data-confirm' => Yii::t('user', 'Are you sure you want to unblock this user?'),
                     ]);
                 } else {
+                    if (!$model->isActivatedByAdmin) {
+                        return Html::a(Yii::t('user', 'Activate'), ['activate', 'id' => $model->id], [
+                            'class' => 'btn btn-xs btn-success btn-block',
+                            'data-method' => 'post',
+                            'data-confirm' => Yii::t('user', 'Are you sure you want to activate this user?'),
+                        ]);
+                    }
                     return Html::a(Yii::t('user', 'Block'), ['block', 'id' => $model->id], [
                         'class' => 'btn btn-xs btn-danger btn-block',
                         'data-method' => 'post',
