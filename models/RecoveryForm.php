@@ -60,7 +60,7 @@ class RecoveryForm extends Model
     {
         return [
             'email'    => Yii::t('user', 'Email'),
-            'password' => Yii::t('user', 'Password'),
+            'password' => Yii::t('user', 'New Password'),
         ];
     }
 

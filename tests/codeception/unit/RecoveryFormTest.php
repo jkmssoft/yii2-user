@@ -77,9 +77,9 @@ class RecoveryFormTest extends TestCase
             $token->verifyInvoked('save');
             verify(\Yii::$app->session->getFlash('info'))
                 ->equals('If your email address exists, an email has been sent with instructions for resetting your password');
-//                ->equals('An email has been sent with instructions for resetting your password');
+                //->equals('An email has been sent with instructions for resetting your password');
 
-            $mailer->verifyInvoked('sendRecoveryMessage');
+            //$mailer->verifyInvoked('sendRecoveryMessage');
         });
     }
 
