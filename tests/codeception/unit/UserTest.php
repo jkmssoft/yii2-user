@@ -47,9 +47,6 @@ class UserTest extends TestCase
 
     public function testRegister()
     {
-        \Yii::$container->set(Module::className(), [
-        ]);
-
         $this->specify('user should be registered', function () {
             $user = new User(['scenario' => 'register']);
             $user->username = 'tester';
