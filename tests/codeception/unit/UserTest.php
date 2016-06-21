@@ -35,8 +35,21 @@ class UserTest extends TestCase
         ];
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function setUp()
+    {
+        parent::setUp();
+        // see https://github.com/Codeception/Specify/issues/25
+        \Codeception\Specify\Config::setDeepClone(false);
+    }
+
     public function testRegister()
     {
+        \Yii::$container->set(Module::className(), [
+        ]);
+
         $this->specify('user should be registered', function () {
             $user = new User(['scenario' => 'register']);
             $user->username = 'tester';
