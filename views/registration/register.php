@@ -42,6 +42,12 @@ $this->params['breadcrumbs'][] = $this->title;
                     <?= $form->field($model, 'password')->passwordInput() ?>
                 <?php endif ?>
 
+                <?php if (isset($module->securityWord[0])): ?>
+                    <?= $form->field($model, 'securityWord')->textInput([
+                        'placeholder' => sprintf(Yii::t('user', 'Enter word \'%s\' in this field.'), $module->securityWord)
+                    ]) ?>
+                <?php endif ?>
+
                 <?= Html::submitButton(Yii::t('user', 'Sign up'), ['class' => 'btn btn-success btn-block']) ?>
 
                 <?php ActiveForm::end(); ?>

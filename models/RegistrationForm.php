@@ -39,13 +39,18 @@ class RegistrationForm extends Model
     public $password;
 
     /**
+     * @var string securityWord
+     */
+    public $securityWord;
+
+    /**
      * @inheritdoc
      */
     public function rules()
     {
         $user = $this->module->modelMap['User'];
 
-        return [
+        $rules = [
             // username rules
             'usernameLength'   => ['username', 'string', 'min' => 3, 'max' => 255],
             'usernameTrim'     => ['username', 'filter', 'filter' => 'trim'],
@@ -71,6 +76,25 @@ class RegistrationForm extends Model
             'passwordRequired' => ['password', 'required', 'skipOnEmpty' => $this->module->enableGeneratingPassword],
             'passwordLength'   => ['password', 'string', 'min' => 6],
         ];
+
+        if (isset($this->module->securityWord[0])) {
+            $rules = array_merge(
+                $rules, [
+                    // securityWord
+                    'securityWordTrim' => ['securityWord', 'filter', 'filter' => 'trim'],
+                    'securityWordRequired' => ['securityWord', 'required'],
+                    'securityWordValidate' => ['securityWord', function ($attribute) {
+                        if ($this->securityWord != $this->module->securityWord) {
+                            $this->addError($attribute, sprintf(
+                                Yii::t('user', 'Enter word \'%s\' in this field.'),
+                                $this->module->securityWord
+                            ));
+                        }
+                    }],
+                ]);
+        } // if securityWord
+
+        return $rules;
     }
 
     /**
@@ -82,6 +106,7 @@ class RegistrationForm extends Model
             'email'    => Yii::t('user', 'Email'),
             'username' => Yii::t('user', 'Username'),
             'password' => Yii::t('user', 'Password'),
+            'securityWord' => Yii::t('user', 'Security Word'),
         ];
     }
 
