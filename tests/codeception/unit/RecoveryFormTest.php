@@ -50,7 +50,10 @@ class RecoveryFormTest extends TestCase
             test::double(ActiveQuery::className(), ['exists' => false]);
             $form->setAttributes(['email' => 'foobar@example.com']);
             verify($form->validate())->true();
-            verify($form->getErrors('email'))->contains('There is no user with this email address');
+            //verify($form->getErrors('email'))->contains('There is no user with this email address');
+            verify(\Yii::$app->session->getFlash('info'))
+                ->equals('If your email address exists, an email has been sent with instructions for resetting your password');
+
             test::double(ActiveQuery::className(), ['exists' => true]);
         });
 
