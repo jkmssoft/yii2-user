@@ -1,6 +1,6 @@
 <?php
 
-namespace dektrium\user\tests;
+namespace tests\codeception\functional;
 
 use dektrium\user\models\Token;
 use dektrium\user\models\User;

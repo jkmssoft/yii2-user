@@ -1,6 +1,6 @@
 <?php
 
-use dektrium\user\tests\FunctionalTester;
+//use tests\codeception\functional\FunctionalTester;
 use dektrium\user\models\Token;
 use dektrium\user\models\User;
 use tests\codeception\_pages\LoginPage;
