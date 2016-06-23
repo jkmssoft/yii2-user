@@ -7,7 +7,6 @@ defined('YII_TEST_ENTRY_FILE') or define('YII_TEST_ENTRY_FILE', __DIR__ . '/../w
 defined('VENDOR_DIR') or define('VENDOR_DIR', __DIR__ . '/../../vendor/');
 
 require_once(__DIR__ . '/../../vendor/autoload.php');
-require_once(__DIR__ . '/../../vendor/yiisoft/yii2/Yii.php');
 
 use AspectMock\Kernel;
 
