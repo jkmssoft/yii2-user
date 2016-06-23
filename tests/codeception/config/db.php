@@ -1,7 +1,7 @@
 <?php
 $db = [
     'class' => 'yii\db\Connection',
-    'dsn' => 'mysql:host=localhost;dbname=yii2_dektrium_test',
+    'dsn' => 'mysql:host=localhost;dbname=dektrium_test',
     'username' => 'root',
     'password' => '',
     'charset' => 'utf8',
