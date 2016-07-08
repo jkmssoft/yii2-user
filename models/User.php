@@ -58,10 +58,13 @@ use yii\helpers\ArrayHelper;
 class User extends ActiveRecord implements IdentityInterface
 {
     use ModuleTrait;
+
     const BEFORE_CREATE   = 'beforeCreate';
     const AFTER_CREATE    = 'afterCreate';
     const BEFORE_REGISTER = 'beforeRegister';
     const AFTER_REGISTER  = 'afterRegister';
+    const BEFORE_CONFIRM  = 'beforeConfirm';
+    const AFTER_CONFIRM   = 'afterConfirm';
 
     // following constants are used on secured email changing process
     const OLD_EMAIL_CONFIRMED = 0b1;
@@ -215,7 +218,7 @@ class User extends ActiveRecord implements IdentityInterface
 
             // password rules
             'passwordRequired' => ['password', 'required', 'on' => ['register']],
-            'passwordLength'   => ['password', 'string', 'min' => 6, 'on' => ['register', 'create']],
+            'passwordLength'   => ['password', 'string', 'min' => 6, 'max' => 72, 'on' => ['register', 'create']],
         ];
     }
 
@@ -388,7 +391,10 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function confirm()
     {
-        return (bool)$this->updateAttributes(['confirmed_at' => time()]);
+        $this->trigger(self::BEFORE_CONFIRM);
+        $result = (bool) $this->updateAttributes(['confirmed_at' => time()]);
+        $this->trigger(self::AFTER_CONFIRM);
+        return $result;
     }
 
     /**
