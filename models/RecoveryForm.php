@@ -109,7 +109,7 @@ class RecoveryForm extends Model
     /**
      * Sends recovery message.
      *
-     * @return bool
+     * @return bool Always true!
      */
     public function sendRecoveryMessage()
     {
@@ -130,8 +130,12 @@ class RecoveryForm extends Model
             }
         }
 
-        Yii::$app->session->setFlash('info',
-            Yii::t('user', 'If your email address exists, an email has been sent with instructions for resetting your password')
+        Yii::$app->session->setFlash(
+            'info',
+            Yii::t(
+                'user',
+                'If your email address exists, an email has been sent with instructions for resetting your password'
+            )
         );
 
         return true;
@@ -154,7 +158,10 @@ class RecoveryForm extends Model
             Yii::$app->session->setFlash('success', Yii::t('user', 'Your password has been changed successfully.'));
             $token->delete();
         } else {
-            Yii::$app->session->setFlash('danger', Yii::t('user', 'An error occurred and your password has not been changed. Please try again later.'));
+            Yii::$app->session->setFlash(
+                'danger',
+                Yii::t('user', 'An error occurred and your password has not been changed. Please try again later.')
+            );
         }
 
         return true;

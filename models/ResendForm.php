@@ -99,7 +99,7 @@ class ResendForm extends Model
     /**
      * Creates new confirmation token and sends it to the user.
      *
-     * @return bool
+     * @return bool Always true
      */
     public function resend()
     {
@@ -116,7 +116,10 @@ class ResendForm extends Model
 
         Yii::$app->session->setFlash(
             'info',
-            Yii::t('user', 'If your email address exists, a message has been sent to your email address. It contains a confirmation link that you must click to complete registration.')
+            Yii::t(
+                'user',
+                'If your email address exists, a message has been sent to your email address. It contains a confirmation link that you must click to complete registration.'
+            )
         );
 
         return true;
