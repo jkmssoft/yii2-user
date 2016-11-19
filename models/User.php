@@ -544,6 +544,10 @@ class User extends ActiveRecord implements IdentityInterface
     /** @inheritdoc */
     public static function findIdentityByAccessToken($token, $type = null)
     {
-        throw new NotSupportedException('Method "' . __CLASS__ . '::' . __METHOD__ . '" is not implemented.');
+        $user = static::findOne(['auth_key' => $token]);
+        if (!$user->isBlocked && $user->isConfirmed) {
+            return $user;
+        }
+        return null;
     }
 }
